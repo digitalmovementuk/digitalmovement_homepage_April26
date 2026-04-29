@@ -1,0 +1,12 @@
+node_modules
+dist
+.DS_Store
+.vite
+*.log
+
+# Source video assets — already mirrored into public/video for the build
+Assets/
+
+# TS build cache
+tsconfig.tsbuildinfo
+.github/

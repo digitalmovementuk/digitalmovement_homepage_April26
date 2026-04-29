@@ -1,0 +1,786 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Surfaces — warm editorial cream system */
+    --canvas: #faf7f2;
+    --canvas-2: #f4f0e8;
+    --canvas-3: #efeae0;
+    --panel: #ffffff;
+    --panel-soft: #f7f4ee;
+
+    /* Brand ink (deep plum from DM logo) */
+    --ink: #1b0e2e;
+    --ink-soft: #3f3450;
+    --ink-muted: #6e6478;
+    --ink-faint: #a39cb2;
+
+    /* Brand accents — kept exactly */
+    --pink: #f13c64;
+    --magenta: #e6359b;
+    --hot-magenta: #ec178d;
+    --violet: #d332ff;
+    --violet-deep: #9a2fc6;
+    --orange: #ffb23d;
+    --orange-deep: #f05f22;
+    --gold: #f5a623;
+    --whatsapp: #25d366;
+
+    /* Hairlines & shadows */
+    --line: rgba(27, 14, 46, 0.08);
+    --line-strong: rgba(27, 14, 46, 0.14);
+    --shadow-card: 0 14px 40px -22px rgba(27, 14, 46, 0.18);
+    --shadow-soft: 0 26px 60px -28px rgba(27, 14, 46, 0.22);
+    --shadow-pop: 0 22px 50px -16px rgba(241, 60, 100, 0.32);
+    --shadow-glass: 0 14px 50px -16px rgba(27, 14, 46, 0.14);
+    --shadow-glass-strong: 0 24px 70px -20px rgba(27, 14, 46, 0.20);
+
+    /* Typography */
+    --dm-font-display: "Manrope", ui-sans-serif, system-ui, sans-serif;
+    --dm-font-body: "Manrope", ui-sans-serif, system-ui, sans-serif;
+
+    /* Brand gradients */
+    --grad-cta: linear-gradient(90deg, #f13c64 0%, #e6359b 50%, #dc2ec9 100%);
+    --grad-brand: linear-gradient(
+      135deg,
+      #ffb23d 14%,
+      #f05f22 33%,
+      #ec178d 59%,
+      #d332ff 78%,
+      #9a2fc6 100%
+    );
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    background: var(--canvas);
+    overflow-x: hidden;
+  }
+
+  body {
+    margin: 0;
+    color: var(--ink);
+    font-family: var(--dm-font-body);
+    font-size: 17px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    background:
+      radial-gradient(900px 500px at 90% -10%, rgba(241, 60, 100, 0.12), transparent 60%),
+      radial-gradient(800px 500px at -5% 5%, rgba(255, 178, 61, 0.15), transparent 60%),
+      radial-gradient(700px 500px at 50% 60%, rgba(211, 50, 255, 0.08), transparent 60%),
+      radial-gradient(600px 500px at 100% 90%, rgba(241, 60, 100, 0.10), transparent 60%),
+      var(--canvas);
+    background-attachment: fixed;
+    overflow-x: hidden;
+    /* Better tap target sizing on iOS */
+    -webkit-tap-highlight-color: transparent;
+  }
+  /* Touch-friendly active states on cards */
+  @media (hover: none) {
+    .glass:active,
+    .glass-strong:active,
+    .glass-frosted:active {
+      transform: scale(0.99);
+    }
+  }
+
+  ::selection {
+    background: var(--hot-magenta);
+    color: #fff;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  button {
+    font-family: inherit;
+    cursor: pointer;
+  }
+
+  input,
+  select,
+  textarea,
+  button {
+    font: inherit;
+    color: inherit;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--hot-magenta);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+
+  .skip-link {
+    position: fixed;
+    top: -40px;
+    left: 16px;
+    z-index: 9999;
+    background: var(--ink);
+    color: #fff;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: top 0.2s ease;
+  }
+  .skip-link:focus {
+    top: 16px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer components {
+  /* ───────────────── Layout ───────────────── */
+  .container-dm {
+    @apply mx-auto w-full max-w-[1240px] px-5 sm:px-8;
+  }
+
+  /* Wide container — sized to span the full visible width of a 15-16"
+     MacBook (1496-1728px CSS px) with only a hairline gutter. */
+  .container-dm-wide {
+    @apply mx-auto w-full max-w-[1760px] px-5 sm:px-7 lg:px-9 xl:px-10 2xl:px-12;
+  }
+
+  /* ───────────────── Type ───────────────── */
+  .eyebrow {
+    @apply inline-flex items-center gap-2 text-[12px] font-bold uppercase tracking-[0.20em];
+    color: var(--ink-muted);
+  }
+
+  .display {
+    font-family: var(--dm-font-display);
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    line-height: 0.96;
+    text-wrap: balance;
+    color: var(--ink);
+  }
+
+  /* Reserved for hero signature line — strong contrast on cream */
+  .text-grad {
+    background: linear-gradient(90deg, #c7166f 0%, #9a2fc6 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .text-grad-brand {
+    background: var(--grad-brand);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Solid accent — preferred over gradient for readability */
+  .text-accent {
+    color: #c7166f;
+  }
+  .text-accent-deep {
+    color: #9a2fc6;
+  }
+
+  /* ───────────────── Buttons ───────────────── */
+  .btn-pill {
+    @apply inline-flex items-center justify-center gap-2 rounded-pill px-7 py-4 text-sm font-bold uppercase tracking-[0.08em] transition will-change-transform;
+  }
+
+  .btn-primary {
+    background: var(--grad-cta);
+    color: #fff;
+    box-shadow: 0 18px 40px -16px rgba(241, 60, 100, 0.55);
+  }
+  .btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 22px 50px -14px rgba(241, 60, 100, 0.65);
+  }
+
+  .btn-ghost {
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(14px) saturate(160%);
+    -webkit-backdrop-filter: blur(14px) saturate(160%);
+    color: var(--ink);
+    border: 1px solid rgba(27, 14, 46, 0.10);
+  }
+  .btn-ghost:hover {
+    background: rgba(255, 255, 255, 0.7);
+    transform: translateY(-1px);
+  }
+
+  .btn-ink {
+    background: var(--ink);
+    color: #fff;
+  }
+  .btn-ink:hover {
+    transform: translateY(-1px);
+    background: #2a1a44;
+  }
+
+  /* ───────────────── Liquid Glass system ───────────────── */
+  /* Subtle frosted base — most cards. */
+  .glass {
+    background: rgba(255, 255, 255, 0.55);
+    backdrop-filter: blur(22px) saturate(170%);
+    -webkit-backdrop-filter: blur(22px) saturate(170%);
+    border: 1px solid rgba(255, 255, 255, 0.65);
+    box-shadow:
+      var(--shadow-glass),
+      inset 0 1px 0 rgba(255, 255, 255, 0.85);
+  }
+
+  /* Stronger frost — for hero form, key panels */
+  .glass-strong {
+    background: rgba(255, 255, 255, 0.70);
+    backdrop-filter: blur(30px) saturate(180%);
+    -webkit-backdrop-filter: blur(30px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.75);
+    box-shadow:
+      var(--shadow-glass-strong),
+      inset 0 1px 0 rgba(255, 255, 255, 0.95);
+  }
+
+  /* Sub-tinted glass — slightly warmer */
+  .glass-tint {
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.60) 0%,
+      rgba(255, 247, 240, 0.50) 100%
+    );
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.65);
+    box-shadow:
+      var(--shadow-glass),
+      inset 0 1px 0 rgba(255, 255, 255, 0.85);
+  }
+
+  /* Pill-sized glass for chips */
+  .glass-pill {
+    background: rgba(255, 255, 255, 0.65);
+    backdrop-filter: blur(18px) saturate(170%);
+    -webkit-backdrop-filter: blur(18px) saturate(170%);
+    border: 1px solid rgba(255, 255, 255, 0.70);
+    box-shadow:
+      0 8px 24px -10px rgba(27, 14, 46, 0.15),
+      inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  }
+
+  /* Nav glass — adapts on scroll */
+  .glass-nav {
+    background: rgba(250, 247, 242, 0.72);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.6);
+    box-shadow:
+      0 1px 0 rgba(27, 14, 46, 0.04),
+      0 8px 32px -16px rgba(27, 14, 46, 0.10);
+  }
+
+  /* Subtle sheen overlay — apply as ::before on glass surfaces if desired */
+  .glass-sheen {
+    position: relative;
+    overflow: hidden;
+  }
+  .glass-sheen::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.4) 0%,
+      rgba(255, 255, 255, 0) 35%,
+      rgba(255, 255, 255, 0) 60%,
+      rgba(255, 255, 255, 0.15) 100%
+    );
+    pointer-events: none;
+    border-radius: inherit;
+  }
+
+  /* Glass on dark surfaces (footer / final CTA) */
+  .glass-dark {
+    background: rgba(28, 19, 48, 0.55);
+    backdrop-filter: blur(22px) saturate(170%);
+    -webkit-backdrop-filter: blur(22px) saturate(170%);
+    border: 1px solid rgba(255, 255, 255, 0.10);
+  }
+
+  /* Mobile: drop the heaviest blurs to keep frame rate up */
+  @media (max-width: 640px) {
+    .glass,
+    .glass-strong,
+    .glass-tint,
+    .glass-nav,
+    .glass-pill {
+      backdrop-filter: blur(18px) saturate(160%);
+      -webkit-backdrop-filter: blur(18px) saturate(160%);
+    }
+  }
+
+  /* ───────────────── Panels (solid fallback) ───────────────── */
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+  }
+
+  .panel-soft {
+    background: var(--panel-soft);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+  }
+
+  .hairline {
+    height: 1px;
+    width: 100%;
+    background: var(--line);
+  }
+
+  .stat-num {
+    font-family: var(--dm-font-display);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    color: var(--ink);
+  }
+
+  /* ───────────────── Marquee ───────────────── */
+  .marquee-track {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 3rem;
+    width: max-content;
+    white-space: nowrap;
+    animation: marquee 32s linear infinite;
+    will-change: transform;
+  }
+  .marquee-track:hover {
+    animation-play-state: paused;
+  }
+  @media (max-width: 640px) {
+    .marquee-track {
+      animation-duration: 26s;
+      gap: 2rem;
+    }
+  }
+
+  /* ───────────────── Atmosphere ───────────────── */
+  .noise {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.04;
+    mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.6 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  }
+
+  .blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.4;
+    pointer-events: none;
+  }
+
+  /* Section-specific gradient blooms (so glass has color to refract through) */
+  .bloom-warm {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: -1;
+    background:
+      radial-gradient(700px 400px at 10% 20%, rgba(255, 178, 61, 0.16), transparent 60%),
+      radial-gradient(600px 400px at 90% 80%, rgba(241, 60, 100, 0.10), transparent 60%);
+  }
+
+  .bloom-cool {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: -1;
+    background:
+      radial-gradient(700px 400px at 90% 20%, rgba(211, 50, 255, 0.10), transparent 60%),
+      radial-gradient(600px 400px at 10% 80%, rgba(241, 60, 100, 0.10), transparent 60%);
+  }
+
+  /* ───────────────── Kinetic word reveal ───────────────── */
+  .word-reveal {
+    display: inline-block;
+    overflow: hidden;
+    vertical-align: top;
+  }
+  .word-reveal > span {
+    display: inline-block;
+    transform: translateY(110%);
+    animation: word-up 0.85s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+  @keyframes word-up {
+    to {
+      transform: translateY(0);
+    }
+  }
+
+  /* Soft animated shimmer on glass cards */
+  @keyframes shimmer-x {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(100%);
+    }
+  }
+  .shimmer::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.45) 50%,
+      transparent 100%
+    );
+    transform: translateX(-100%);
+    pointer-events: none;
+    border-radius: inherit;
+  }
+  .shimmer:hover::after {
+    animation: shimmer-x 1.2s ease-in-out;
+  }
+
+  /* Section dividers */
+  .section-line {
+    border-top: 1px solid var(--line);
+  }
+
+  /* Page-load attention pulse — runs 3 iterations over ~3s then settles.
+     Uses zero-spread box-shadows so no hard ring is rendered. */
+  @keyframes form-pulse {
+    0%,
+    100% {
+      transform: scale(1);
+      box-shadow:
+        0 24px 60px -28px rgba(27, 14, 46, 0.22),
+        0 0 0 rgba(236, 23, 141, 0);
+    }
+    50% {
+      transform: scale(1.014);
+      box-shadow:
+        0 28px 70px -26px rgba(27, 14, 46, 0.26),
+        0 0 60px rgba(236, 23, 141, 0.40);
+    }
+  }
+  .form-pulse-on-load {
+    animation: form-pulse 1.05s ease-in-out 0.85s 3;
+  }
+
+  /* True frosted glass — for the hero contact form */
+  .glass-frosted {
+    position: relative;
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.62) 0%,
+      rgba(255, 247, 240, 0.48) 100%
+    );
+    backdrop-filter: blur(38px) saturate(190%);
+    -webkit-backdrop-filter: blur(38px) saturate(190%);
+    border: 1px solid rgba(255, 255, 255, 0.65);
+    box-shadow:
+      0 30px 80px -28px rgba(27, 14, 46, 0.26),
+      inset 0 1px 0 rgba(255, 255, 255, 0.95),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.10);
+    overflow: hidden;
+  }
+  /* Subtle frost noise texture for that "iced" look */
+  .glass-frosted::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='1.6' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.8 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    opacity: 0.18;
+    mix-blend-mode: soft-light;
+    pointer-events: none;
+    border-radius: inherit;
+  }
+  /* Diagonal sheen highlight */
+  .glass-frosted::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.38) 0%,
+      rgba(255, 255, 255, 0) 28%,
+      rgba(255, 255, 255, 0) 72%,
+      rgba(255, 255, 255, 0.18) 100%
+    );
+    pointer-events: none;
+    border-radius: inherit;
+  }
+  @media (max-width: 640px) {
+    .glass-frosted {
+      backdrop-filter: blur(24px) saturate(170%);
+      -webkit-backdrop-filter: blur(24px) saturate(170%);
+    }
+  }
+
+  /* Word-style highlighter sweep — left-to-right text background fill */
+  @keyframes highlight-sweep-grow {
+    to {
+      background-size: 100% 100%;
+    }
+  }
+  .highlight-sweep {
+    background-image: linear-gradient(
+      120deg,
+      rgba(255, 178, 61, 0.55) 0%,
+      rgba(236, 23, 141, 0.50) 60%,
+      rgba(211, 50, 255, 0.45) 100%
+    );
+    /* Cap the highlight to ~0.7em of the line height so it sits inside the
+       text band and never bleeds into the eyebrow chip above. */
+    background-size: 0% 0.72em;
+    background-repeat: no-repeat;
+    background-position: left 78%;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+    padding: 0 0.06em;
+    margin: 0 -0.06em;
+    border-radius: 4px;
+    animation: highlight-sweep-grow 1.45s cubic-bezier(0.22, 1, 0.36, 1) 0.95s
+      forwards;
+  }
+
+  /* Soft ambient fade-in for hero atmosphere (blobs, noise, ripples) */
+  @keyframes ambient-fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  .ambient-load {
+    animation: ambient-fade-in 1.4s ease-out 0.05s both;
+  }
+
+  /* Editorial chapter mark — inline element at the top of each section.
+     Sits in flow so it can never overlap content. Pairs with a horizontal
+     rule that extends to the right edge of the container. */
+  .section-chapter {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+  }
+  .section-chapter__num {
+    font-family: var(--dm-font-display);
+    font-weight: 800;
+    font-size: clamp(48px, 5.6vw, 88px);
+    line-height: 0.85;
+    letter-spacing: -0.04em;
+    background: var(--grad-brand);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    flex-shrink: 0;
+    user-select: none;
+  }
+  .section-chapter__rule {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(
+      to right,
+      rgba(27, 14, 46, 0.16) 0%,
+      rgba(27, 14, 46, 0.04) 60%,
+      transparent 100%
+    );
+  }
+  @media (max-width: 640px) {
+    .section-chapter {
+      justify-content: center;
+      margin-bottom: 1.75rem;
+      gap: 1rem;
+    }
+    .section-chapter__rule {
+      display: none;
+    }
+  }
+
+  /* Animated underline — text-decoration-style hover sweep */
+  .link-underline {
+    background-image: linear-gradient(0deg, currentColor 0%, currentColor 100%);
+    background-size: 0% 1px;
+    background-repeat: no-repeat;
+    background-position: 0 100%;
+    transition: background-size 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .link-underline:hover,
+  .link-underline:focus-visible {
+    background-size: 100% 1px;
+  }
+
+  /* Plum colour pulse — cycles between light-ink and dark-ink within
+     the brand plum family. No shape/scale change, only colour. */
+  @keyframes pulse-plum-color {
+    0%,
+    100% {
+      background-color: #ffffff;
+      color: #1b0e2e;
+      border-color: rgba(27, 14, 46, 0.18);
+    }
+    50% {
+      background-color: #1b0e2e;
+      color: #ffffff;
+      border-color: rgba(27, 14, 46, 0.0);
+    }
+  }
+  .pulse-plum-color {
+    animation: pulse-plum-color 2.6s cubic-bezier(0.4, 0, 0.4, 1) infinite;
+  }
+
+  /* Subtle ambient float — gives the form a "breathing" alive feel on mobile.
+     Triggers AFTER the entry pulse settles. */
+  @keyframes ambient-float {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-4px);
+    }
+  }
+  .ambient-float {
+    animation: ambient-float 6s ease-in-out 4.5s infinite;
+  }
+
+  /* Typewriter cursor blink */
+  @keyframes blink {
+    0%,
+    50% {
+      opacity: 1;
+    }
+    50.01%,
+    100% {
+      opacity: 0;
+    }
+  }
+
+  /* Hero scroll cue */
+  @keyframes scroll-cue-pulse {
+    0%,
+    100% {
+      transform: translateY(0);
+      opacity: 0.7;
+    }
+    50% {
+      transform: translateY(8px);
+      opacity: 1;
+    }
+  }
+  .scroll-cue {
+    animation: scroll-cue-pulse 2.2s ease-in-out infinite;
+  }
+
+  /* Hero water ripple — velocity-responsive (size + alpha set inline) */
+  @keyframes ripple-water {
+    0% {
+      transform: translate(-50%, -50%) scale(0.18);
+    }
+    100% {
+      transform: translate(-50%, -50%) scale(2.6);
+    }
+  }
+  @keyframes ripple-water-fade {
+    0% {
+      opacity: 1;
+    }
+    25% {
+      opacity: 0.55;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+  @keyframes ripple-water-inner {
+    0% {
+      transform: translate(-50%, -50%) scale(0.05);
+      opacity: 0.6;
+    }
+    100% {
+      transform: translate(-50%, -50%) scale(2.2);
+      opacity: 0;
+    }
+  }
+  .ripple {
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(
+      closest-side,
+      rgba(241, 60, 100, 0.34) 0%,
+      rgba(236, 23, 141, 0.22) 28%,
+      rgba(211, 50, 255, 0.11) 55%,
+      transparent 78%
+    );
+    animation:
+      ripple-water 1.7s cubic-bezier(0.22, 1, 0.36, 1) forwards,
+      ripple-water-fade 1.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    pointer-events: none;
+    filter: blur(3px);
+    will-change: transform, opacity;
+    /* No mix-blend-mode — was forcing backdrop-filter recompute on glass siblings */
+  }
+  .ripple::after {
+    content: "";
+    position: absolute;
+    inset: 28%;
+    border-radius: 50%;
+    background: radial-gradient(
+      closest-side,
+      rgba(255, 255, 255, 0.45) 0%,
+      rgba(255, 255, 255, 0) 70%
+    );
+    animation: ripple-water-inner 1.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    filter: blur(2px);
+  }
+  /* Container that owns ripples — paint-isolated so it can't repaint siblings */
+  .ripple-layer {
+    contain: layout paint style;
+    will-change: contents;
+  }
+}
+
+@layer utilities {
+  .mask-fade-x {
+    -webkit-mask-image: linear-gradient(
+      90deg,
+      transparent 0%,
+      #000 8%,
+      #000 92%,
+      transparent 100%
+    );
+    mask-image: linear-gradient(90deg, transparent 0%, #000 8%, #000 92%, transparent 100%);
+  }
+  .text-balance {
+    text-wrap: balance;
+  }
+  .grid-stretch {
+    grid-auto-rows: 1fr;
+  }
+}
