@@ -1,20 +1,50 @@
-import { useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { useEffect, useRef, useState, Fragment } from "react";
+import { motion, useReducedMotion } from "framer-motion";
+import { ArrowRight, ArrowDown } from "lucide-react";
 import { processSteps } from "../content";
 import { Reveal } from "../lib/Reveal";
 import { KineticH2 } from "../lib/KineticH2";
 
 export function Process() {
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start 70%", "end 30%"],
-  });
-  const lineLength = useTransform(scrollYProgress, [0, 1], [0, 1]);
+  const reduce = useReducedMotion();
+  const cardRefs = useRef<(HTMLElement | null)[]>([]);
+  const [activeStep, setActiveStep] = useState(0);
+
+  /**
+   * Sync the active card to the user's scroll position.
+   *
+   * Each card is observed against a thin band at the viewport's vertical
+   * centre (rootMargin "-45% 0 -45% 0" → ~10vh tall detection zone).
+   * Whichever card currently overlaps that band is "active". On mobile
+   * (vertical stack) cards cross the band one at a time, so the active
+   * state moves smoothly as you scroll. On desktop (horizontal row) the
+   * section is shorter than the viewport so all cards enter the band
+   * together — the iteration order ensures the active state ends up on
+   * the card the user is closest to as the section settles into place.
+   */
+  useEffect(() => {
+    if (typeof IntersectionObserver === "undefined") return;
+    const observers: IntersectionObserver[] = [];
+    cardRefs.current.forEach((el, i) => {
+      if (!el) return;
+      const obs = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) setActiveStep(i);
+        },
+        { rootMargin: "-45% 0px -45% 0px", threshold: 0 },
+      );
+      obs.observe(el);
+      observers.push(obs);
+    });
+    return () => observers.forEach((o) => o.disconnect());
+  }, []);
 
   return (
-    <section id="process" className="relative py-24 sm:py-28 md:py-36 lg:py-40 section-line overflow-hidden">
-      <div className="container-dm-wide relative" ref={sectionRef}>
+    <section
+      id="process"
+      className="relative py-20 sm:py-24 md:py-28 lg:py-32 section-line overflow-hidden"
+    >
+      <div className="container-dm-wide relative">
         <div className="section-chapter">
           <span className="section-chapter__num" aria-hidden>03</span>
           <span className="section-chapter__rule" aria-hidden />
@@ -32,92 +62,97 @@ export function Process() {
           />
           <Reveal delay={0.15}>
             <p className="mt-7 sm:mt-8 max-w-[680px] mx-auto lg:mx-0 text-[17px] sm:text-[19px] text-ink-soft leading-relaxed">
-              Four steps. No padded sales decks. You see it all happen.
+              Three steps. No padded sales decks. You see it all happen.
             </p>
           </Reveal>
         </div>
 
-        {/* Desktop horizontal timeline */}
-        <div className="mt-16 sm:mt-20 hidden lg:block relative">
-          <svg
-            className="absolute inset-x-0 top-[40px] h-[2px] w-full"
-            viewBox="0 0 1000 2"
-            preserveAspectRatio="none"
-            aria-hidden
-          >
-            <line x1="0" y1="1" x2="1000" y2="1" stroke="rgba(27,14,46,0.10)" strokeWidth="2" />
-            <motion.line
-              x1="0"
-              y1="1"
-              x2="1000"
-              y2="1"
-              stroke="url(#proc-grad)"
-              strokeWidth="2"
-              style={{ pathLength: lineLength }}
-            />
-            <defs>
-              <linearGradient
-                id="proc-grad"
-                x1="0"
-                x2="1000"
-                y1="0"
-                y2="0"
-                gradientUnits="userSpaceOnUse"
-              >
-                <stop stopColor="#FFB23D" />
-                <stop offset="0.5" stopColor="#EC178D" />
-                <stop offset="1" stopColor="#9A2FC6" />
-              </linearGradient>
-            </defs>
-          </svg>
-
-          <div className="relative grid grid-cols-4 gap-10">
-            {processSteps.map((step, i) => (
-              <Reveal key={step.n} delay={i * 0.08}>
-                <div>
-                  <div className="relative flex h-[96px] items-center justify-center">
-                    <div className="glass-strong grid h-24 w-24 place-items-center rounded-full">
-                      <span className="stat-num text-[34px] text-ink">{step.n}</span>
+        {/* Step cards. Connectors live BETWEEN cards (never across), so they
+            can't overlap the numbered badge or the description text. */}
+        <div
+          role="list"
+          className="mt-14 sm:mt-18 md:mt-20 grid gap-6 lg:gap-0 grid-cols-1 lg:grid-cols-[1fr_auto_1fr_auto_1fr] items-stretch"
+        >
+          {processSteps.map((step, i) => {
+            const isActive = activeStep === i;
+            const isLast = i === processSteps.length - 1;
+            return (
+              <Fragment key={step.n}>
+                <Reveal delay={i * 0.08} className="h-full">
+                  <article
+                    ref={(el) => {
+                      cardRefs.current[i] = el;
+                    }}
+                    role="listitem"
+                    className={`relative h-full rounded-card border p-7 sm:p-8 md:p-9 transition-all duration-500 ${
+                      isActive
+                        ? "border-transparent bg-white shadow-pop ring-2 ring-dm-hot-magenta/35 -translate-y-0.5"
+                        : "border-ink/10 bg-white/75 backdrop-blur-md"
+                    }`}
+                  >
+                    {/* Numbered badge */}
+                    <div className="flex justify-center sm:justify-start">
+                      <div className="relative">
+                        <span
+                          aria-hidden
+                          className={`absolute inset-0 rounded-full transition-opacity duration-500 ${
+                            isActive ? "opacity-100" : "opacity-0"
+                          }`}
+                          style={{ background: "var(--grad-cta)", filter: "blur(18px)" }}
+                        />
+                        <motion.div
+                          animate={isActive && !reduce ? { scale: 1.06 } : { scale: 1 }}
+                          transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+                          className={`relative grid h-16 w-16 place-items-center rounded-full transition-colors duration-500 ${
+                            isActive ? "shadow-pop" : "bg-canvas-2 border border-ink/10"
+                          }`}
+                          style={isActive ? { background: "var(--grad-cta)" } : undefined}
+                        >
+                          <span
+                            className={`stat-num text-[26px] transition-colors duration-500 ${
+                              isActive ? "text-white" : "text-ink"
+                            }`}
+                          >
+                            {step.n}
+                          </span>
+                        </motion.div>
+                      </div>
                     </div>
-                  </div>
-                  <p className="mt-7 text-center text-[12px] font-bold uppercase tracking-[0.20em] text-ink-muted">
-                    {step.eta}
-                  </p>
-                  <h3 className="mt-2 text-center text-[22px] xl:text-[24px] font-extrabold text-ink">
-                    {step.title}
-                  </h3>
-                  <p className="mt-3 text-center text-[15px] text-ink-soft leading-relaxed">
-                    {step.body}
-                  </p>
-                </div>
-              </Reveal>
-            ))}
-          </div>
-        </div>
 
-        {/* Mobile vertical timeline — centered stack */}
-        <ol className="lg:hidden mt-12 sm:mt-14 relative">
-          <div
-            aria-hidden
-            className="absolute left-1/2 -translate-x-1/2 top-10 bottom-10 w-px bg-ink/12"
-          />
-          {processSteps.map((step, i) => (
-            <li key={step.n} className="relative pb-12 last:pb-0 text-center">
-              <Reveal delay={i * 0.06}>
-                <div className="glass-strong mx-auto grid h-20 w-20 place-items-center rounded-full">
-                  <span className="stat-num text-[28px] text-ink">{step.n}</span>
-                </div>
-                <p className="mt-5 text-[12px] font-bold uppercase tracking-[0.20em] text-ink-muted">
-                  {step.eta}
-                </p>
-                <h3 className="mt-2 text-[22px] font-extrabold text-ink">{step.title}</h3>
-                <p className="mt-2 max-w-[420px] mx-auto text-[15px] text-ink-soft leading-relaxed">
-                  {step.body}
-                </p>
-              </Reveal>
-            </li>
-          ))}
-        </ol>
+                    {/* Content */}
+                    <p
+                      className={`mt-6 sm:mt-7 text-center sm:text-left text-[11px] sm:text-[12px] font-bold uppercase tracking-[0.20em] transition-colors duration-500 ${
+                        isActive ? "text-accent" : "text-ink-muted"
+                      }`}
+                    >
+                      {step.eta}
+                    </p>
+                    <h3 className="mt-2 text-center sm:text-left text-[22px] xl:text-[24px] font-extrabold text-ink leading-tight">
+                      {step.title}
+                    </h3>
+                    <p className="mt-3 text-center sm:text-left text-[15px] text-ink-soft leading-relaxed">
+                      {step.body}
+                    </p>
+                  </article>
+                </Reveal>
+
+                {!isLast && (
+                  <div
+                    aria-hidden
+                    className="flex items-center justify-center text-ink-muted/70 lg:px-2"
+                  >
+                    <span className="lg:hidden py-1">
+                      <ArrowDown size={20} strokeWidth={2.4} />
+                    </span>
+                    <span className="hidden lg:inline-flex">
+                      <ArrowRight size={22} strokeWidth={2.4} />
+                    </span>
+                  </div>
+                )}
+              </Fragment>
+            );
+          })}
+        </div>
       </div>
     </section>
   );

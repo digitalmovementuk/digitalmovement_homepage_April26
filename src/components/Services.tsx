@@ -1,10 +1,70 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { ReactElement } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowUpRight, Check, Plus } from "lucide-react";
+import { Check, Plus } from "lucide-react";
 import { services } from "../content";
 import { Reveal } from "../lib/Reveal";
 import { KineticH2 } from "../lib/KineticH2";
+
+/** Plays a video when it scrolls into the viewport, pauses when it scrolls out.
+ *  Forces `muted` programmatically so iOS Safari accepts autoplay. */
+function CardVideo({ src }: { src: string }) {
+  const ref = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    const v = ref.current;
+    if (!v) return;
+    // iOS Safari needs muted set on the element AND .play() called via JS
+    v.muted = true;
+    v.defaultMuted = true;
+
+    const tryPlay = () => v.play().catch(() => {});
+
+    if (typeof IntersectionObserver === "undefined") {
+      tryPlay();
+      return;
+    }
+
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) tryPlay();
+        else v.pause();
+      },
+      { threshold: 0.15 },
+    );
+    io.observe(v);
+    // Also kick off a play attempt now in case the card is already in view on mount
+    tryPlay();
+    return () => io.disconnect();
+  }, [src]);
+
+  return (
+    <video
+      ref={ref}
+      autoPlay
+      loop
+      muted
+      playsInline
+      preload="metadata"
+      // Don't compete with critical above-the-fold resources
+      // @ts-expect-error — fetchpriority is widely supported but missing from React types
+      fetchpriority="low"
+      className="absolute inset-0 h-full w-full object-cover"
+      src={src}
+      aria-hidden
+      {...({ "webkit-playsinline": "true", "x5-playsinline": "true" } as Record<string, string>)}
+    />
+  );
+}
+
+// Service cards that use an animated video instead of the SVG icon.
+// File served from /public/video; built path resolves via BASE_URL.
+const VIDEOS: Record<string, string | undefined> = {
+  seo: `${import.meta.env.BASE_URL}video/seo-logo.mp4`,
+  "google-ads": `${import.meta.env.BASE_URL}video/google-ads-logo.mp4`,
+  social: `${import.meta.env.BASE_URL}video/socials-logo.mp4`,
+  websites: `${import.meta.env.BASE_URL}video/website-logo.mp4`,
+};
 
 const ICONS: Record<string, ReactElement> = {
   seo: (
@@ -100,13 +160,14 @@ export function Services() {
           <KineticH2
             className="display mt-5 sm:mt-6 text-[clamp(44px,7.4vw,124px)] uppercase max-w-[18ch] mx-auto lg:mx-0"
             spans={[
-              { text: "Four levers." },
-              { text: "One growth engine.", className: "text-accent" },
+              { text: "More leads." },
+              { text: "More revenue.", className: "text-accent" },
+              { text: "More growth." },
             ]}
           />
           <Reveal delay={0.15}>
             <p className="mt-7 sm:mt-8 max-w-[640px] mx-auto lg:mx-0 text-[17px] sm:text-[19px] text-ink-soft leading-relaxed">
-              Channels that compound. Tap a card to see exactly how each lever works.
+              Four channels that compound into one growth engine for your business. Tap a card to see exactly how each one drives results.
             </p>
           </Reveal>
         </div>
@@ -130,28 +191,49 @@ export function Services() {
                     style={{ background: "var(--grad-brand)" }}
                   />
                   <div className="relative flex flex-1 flex-col text-center sm:text-left">
-                    <div className="flex items-start justify-between">
-                      <div className="grid h-12 w-12 place-items-center rounded-xl2 bg-canvas-2/70 backdrop-blur-sm">
-                        {ICONS[s.key]}
+                    {VIDEOS[s.key] ? (
+                      <div className="relative -mx-2 sm:-mx-3 -mt-1 sm:-mt-2 mb-2 aspect-[16/10] rounded-xl2 overflow-hidden bg-canvas-2">
+                        <CardVideo src={VIDEOS[s.key]!} />
+                        <button
+                          onClick={() => toggle(s.key)}
+                          className={`absolute right-3 top-3 grid h-9 w-9 place-items-center rounded-full border transition backdrop-blur-md ${
+                            isOpen
+                              ? "border-transparent bg-ink text-white"
+                              : "border-white/40 bg-white/70 text-ink hover:bg-white"
+                          }`}
+                          aria-label={isOpen ? "Collapse details" : "Expand details"}
+                          aria-expanded={isOpen}
+                        >
+                          <Plus
+                            size={16}
+                            className={`transition-transform duration-300 ${isOpen ? "rotate-45" : ""}`}
+                          />
+                        </button>
                       </div>
-                      <button
-                        onClick={() => toggle(s.key)}
-                        className={`grid h-9 w-9 place-items-center rounded-full border transition ${
-                          isOpen
-                            ? "border-transparent bg-ink text-white"
-                            : "border-ink/15 bg-white/70 backdrop-blur-sm text-ink-muted hover:text-ink hover:border-ink/30"
-                        }`}
-                        aria-label={isOpen ? "Collapse details" : "Expand details"}
-                        aria-expanded={isOpen}
-                      >
-                        <Plus
-                          size={16}
-                          className={`transition-transform duration-300 ${isOpen ? "rotate-45" : ""}`}
-                        />
-                      </button>
-                    </div>
+                    ) : (
+                      <div className="flex items-start justify-between">
+                        <div className="grid h-12 w-12 place-items-center rounded-xl2 bg-canvas-2/70 backdrop-blur-sm">
+                          {ICONS[s.key]}
+                        </div>
+                        <button
+                          onClick={() => toggle(s.key)}
+                          className={`grid h-9 w-9 place-items-center rounded-full border transition ${
+                            isOpen
+                              ? "border-transparent bg-ink text-white"
+                              : "border-ink/15 bg-white/70 backdrop-blur-sm text-ink-muted hover:text-ink hover:border-ink/30"
+                          }`}
+                          aria-label={isOpen ? "Collapse details" : "Expand details"}
+                          aria-expanded={isOpen}
+                        >
+                          <Plus
+                            size={16}
+                            className={`transition-transform duration-300 ${isOpen ? "rotate-45" : ""}`}
+                          />
+                        </button>
+                      </div>
+                    )}
 
-                    <h3 className="mt-7 text-[22px] sm:text-[24px] font-extrabold uppercase tracking-tight text-ink">
+                    <h3 className={`${VIDEOS[s.key] ? "mt-5" : "mt-7"} text-[22px] sm:text-[24px] font-extrabold uppercase tracking-tight text-ink`}>
                       {s.title}
                     </h3>
 
@@ -190,15 +272,10 @@ export function Services() {
                       )}
                     </AnimatePresence>
 
-                    {/* CTA pinned to the bottom of every card → identical placement */}
-                    <div className="mt-auto pt-6 flex justify-center sm:justify-start">
-                      <a
-                        href="#contact"
-                        className="text-[12px] font-bold uppercase tracking-[0.14em] text-ink hover:text-dm-hot-magenta inline-flex items-center gap-1.5 transition"
-                      >
-                        Get a proposal <ArrowUpRight size={14} />
-                      </a>
-                    </div>
+                    {/* No per-card CTA. The + button toggles details inline,
+                        and the page already has a primary "Free Proposal"
+                        surface in the Hero / StickyCTA / Footer. Repeating
+                        the link four times here was visual noise. */}
                   </div>
                 </article>
               </Reveal>

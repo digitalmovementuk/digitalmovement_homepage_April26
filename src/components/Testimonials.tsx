@@ -1,7 +1,10 @@
-import { Star, ExternalLink, Quote } from "lucide-react";
-import { testimonials, googleRating } from "../content";
+import { Star, ExternalLink, Quote, ArrowRight } from "lucide-react";
+import { motion } from "framer-motion";
+import { testimonials, googleRating, results } from "../content";
 import { Reveal } from "../lib/Reveal";
 import { KineticH2 } from "../lib/KineticH2";
+
+const featured = results[0];
 
 export function Testimonials() {
   return (
@@ -20,13 +23,13 @@ export function Testimonials() {
         <div className="grid gap-8 lg:gap-12 lg:grid-cols-[1fr_auto] lg:items-end text-center lg:text-left">
           <div>
             <Reveal>
-              <p className="eyebrow">Google reviews</p>
+              <p className="eyebrow">Testimonials</p>
             </Reveal>
             <KineticH2
               className="display mt-5 sm:mt-6 text-[clamp(40px,6.4vw,108px)] uppercase max-w-[20ch] mx-auto lg:mx-0"
               spans={[
                 { text: "5.0 rated.", className: "text-accent" },
-                { text: "200+ times." },
+                { text: "+100 reviews." },
               ]}
             />
             <Reveal delay={0.15}>
@@ -52,7 +55,7 @@ export function Testimonials() {
                   </span>
                 </div>
                 <p className="text-[12px] text-ink-muted font-semibold">
-                  {googleRating.count}+ verified
+                  +100 reviews
                 </p>
               </div>
             </div>
@@ -62,11 +65,39 @@ export function Testimonials() {
               rel="noopener noreferrer"
               className="btn-pill btn-ink text-[12px] px-5 py-3"
             >
-              Read all 200 reviews
+              Read +100 reviews on Google
               <ExternalLink size={14} />
             </a>
           </Reveal>
         </div>
+
+        {/* Featured client transformation — moved here from the Results section.
+            Anchors the testimonials block with one big, plain-English win
+            before the four-up review grid. */}
+        <Reveal delay={0.1}>
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+            className="mt-12 sm:mt-14 md:mt-16 glass-strong rounded-card p-6 sm:p-8 md:p-10 grid gap-6 md:gap-8 md:grid-cols-[1fr_auto] md:items-end text-center md:text-left"
+          >
+            <div>
+              <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-ink-muted">
+                {featured.industry} · {featured.work}
+              </p>
+              <p className="mt-3 display text-[clamp(24px,3.4vw,40px)] uppercase max-w-[24ch] mx-auto md:mx-0">
+                "{featured.quote}"
+              </p>
+              <p className="mt-4 text-ink-muted text-[14px]">
+                {featured.metric} {featured.label.toLowerCase()} · {featured.timeline}
+              </p>
+            </div>
+            <a href="#contact" className="btn-link self-center md:self-end">
+              Talk to us about your numbers <ArrowRight size={14} />
+            </a>
+          </motion.div>
+        </Reveal>
 
         {/* Reviews grid — 2x2 on lg+, stack on mobile.
             Cards alternate solid white + tinted glass for visual rhythm. */}

@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import { Phone, MessageCircle, Mail } from "lucide-react";
 import { business } from "../content";
 import { Reveal } from "../lib/Reveal";
@@ -5,7 +6,7 @@ import { KineticH2 } from "../lib/KineticH2";
 
 export function Owner() {
   return (
-    <section className="relative py-24 sm:py-28 md:py-36 lg:py-40 section-line overflow-hidden">
+    <section className="relative py-20 sm:py-24 md:py-28 lg:py-32 section-line overflow-hidden">
       <div className="container-dm-wide relative">
         <div className="section-chapter">
           <span className="section-chapter__num" aria-hidden>05</span>
@@ -15,21 +16,20 @@ export function Owner() {
         {/* Header — full width above the video + contact panel */}
         <div className="text-center lg:text-left">
           <Reveal>
-            <p className="eyebrow">Talk to a real person</p>
+            <p className="eyebrow">Founder-led replies</p>
           </Reveal>
           <KineticH2
             className="display mt-5 sm:mt-6 text-[clamp(40px,6.8vw,108px)] uppercase max-w-[18ch] mx-auto lg:mx-0"
             spans={[
-              { text: "No chatbots." },
-              { text: "No call centres.", className: "text-accent" },
+              { text: "No tickets." },
+              { text: "No queue.", className: "text-accent" },
             ]}
           />
           <Reveal delay={0.15}>
             <p className="mt-7 sm:mt-8 mx-auto lg:mx-0 max-w-[760px] text-[17px] sm:text-[19px] text-ink-soft leading-relaxed">
-              When you call us, you get a real specialist — not a junior reading
-              from a script. We pick up the phone, screen-share the audit, and
-              tell you exactly what we'd do for your business. If it's not the
-              right fit, we'll say so.
+              Whichever channel you use, a founder reads it. We pick up the phone, reply on
+              WhatsApp, and answer email — fast. If it's not the right fit for your
+              business, we'll say so. Pick the channel that suits you.
             </p>
           </Reveal>
         </div>
@@ -117,17 +117,44 @@ export function Owner() {
 }
 
 function OwnerVideo() {
+  const ref = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    const v = ref.current;
+    if (!v) return;
+    v.muted = true;
+    v.defaultMuted = true;
+    const tryPlay = () => v.play().catch(() => {});
+    if (typeof IntersectionObserver === "undefined") {
+      tryPlay();
+      return;
+    }
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) tryPlay();
+        else v.pause();
+      },
+      { threshold: 0.1 },
+    );
+    io.observe(v);
+    return () => io.disconnect();
+  }, []);
+
   return (
     <div className="relative h-full w-full rounded-card overflow-hidden glass shadow-soft min-h-[480px] lg:min-h-0">
       <video
+        ref={ref}
         className="absolute inset-0 h-full w-full object-cover"
-        src="/video/dm-signpost.mp4"
+        src={`${import.meta.env.BASE_URL}video/dm-signpost.mp4`}
         autoPlay
         loop
         muted
         playsInline
         preload="metadata"
+        // @ts-expect-error fetchpriority is missing from React types
+        fetchpriority="low"
         aria-label="Digital Movement sticker spotted on a London lamppost"
+        {...({ "webkit-playsinline": "true", "x5-playsinline": "true" } as Record<string, string>)}
       />
       {/* Bottom-up gradient for caption legibility */}
       <div

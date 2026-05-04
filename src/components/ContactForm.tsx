@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion, useReducedMotion, AnimatePresence } from "framer-motion";
-import { ArrowRight, Check } from "lucide-react";
+import { ArrowRight, Check, Phone, MessageCircle, Clock } from "lucide-react";
+import { business } from "../content";
 
 const SERVICES = ["SEO", "Google Ads", "Social Media", "Website", "Not sure yet"];
 
@@ -40,7 +41,7 @@ export function ContactForm({ variant = "hero" }: { variant?: Variant }) {
                 <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-ink-muted">
                   Free Proposal
                 </p>
-                <h3 className="mt-1 text-[19px] sm:text-[22px] font-extrabold leading-tight text-ink">
+                <h3 className="mt-1 text-[22px] sm:text-[24px] font-extrabold leading-tight text-ink">
                   Tell us what you need.
                 </h3>
               </div>
@@ -120,10 +121,47 @@ export function ContactForm({ variant = "hero" }: { variant?: Variant }) {
             </div>
             <h3 className="mt-5 text-[22px] font-extrabold text-ink">We've got your details.</h3>
             <p className="mt-2 text-ink-soft leading-relaxed">
-              One of our specialists will be in touch within 24h. In the meantime, here's what happens next.
+              A founder — not a sales rep — will reply personally within 24h on weekdays.
             </p>
-            <a href="#process" className="btn-pill btn-ghost mt-5 inline-flex">
-              See the next steps <ArrowRight size={14} />
+
+            {/* Inline "what happens next" — keeps the user at the form, no
+                scroll-away link. Saving the number is the next concrete
+                action; that's why it's the prominent affordance. */}
+            <div className="mt-6 rounded-xl2 border border-ink/10 bg-white/70 p-4 sm:p-5 text-left space-y-3">
+              <div className="flex items-start gap-3">
+                <span className="mt-0.5 grid h-8 w-8 shrink-0 place-items-center rounded-full bg-canvas-2 text-ink">
+                  <Clock size={15} strokeWidth={2.4} />
+                </span>
+                <div className="text-[13px] text-ink-soft leading-relaxed">
+                  <p className="font-bold text-ink">Reply within 24h</p>
+                  <p>Weekdays. We screen-share the audit on a 30-min call — no padded sales deck.</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <span className="mt-0.5 grid h-8 w-8 shrink-0 place-items-center rounded-full bg-canvas-2 text-ink">
+                  <Phone size={14} strokeWidth={2.4} />
+                </span>
+                <div className="text-[13px] text-ink-soft leading-relaxed">
+                  <p className="font-bold text-ink">Save our number</p>
+                  <p>
+                    Call-backs come from{" "}
+                    <a href={business.phoneHref} className="text-ink underline underline-offset-2 hover:text-dm-hot-magenta">
+                      {business.phone}
+                    </a>
+                    . If we ring, that's us.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Optional fast lane — WhatsApp for those who'd rather not wait. */}
+            <a
+              href={business.whatsappHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-pill btn-secondary mt-5 inline-flex text-[12px] px-5 py-3"
+            >
+              <MessageCircle size={14} /> Or WhatsApp us now
             </a>
           </motion.div>
         )}

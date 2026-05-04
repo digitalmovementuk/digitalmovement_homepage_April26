@@ -30,7 +30,9 @@ export function StickyCTA() {
           className="fixed inset-x-0 z-40 pointer-events-none"
           style={{ bottom: "max(20px, env(safe-area-inset-bottom))" }}
         >
-          <div className="container-dm flex justify-center">
+          {/* On mobile: align right to clear the bottom-left Google badge.
+              On sm+: centered (badge is small enough relative to viewport). */}
+          <div className="container-dm flex justify-end sm:justify-center pr-3 sm:pr-0">
             <div className="pointer-events-auto glass-strong inline-flex items-center gap-2 rounded-pill p-1.5 pl-3 sm:pl-5">
               <span className="hidden sm:inline-flex items-center text-[12px] font-bold uppercase tracking-[0.14em] text-ink pr-1">
                 Get your free proposal

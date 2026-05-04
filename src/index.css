@@ -122,7 +122,7 @@
 
   .skip-link {
     position: fixed;
-    top: -40px;
+    top: 16px;
     left: 16px;
     z-index: 9999;
     background: var(--ink);
@@ -130,10 +130,11 @@
     padding: 10px 14px;
     border-radius: 8px;
     font-weight: 600;
-    transition: top 0.2s ease;
+    transform: translateY(calc(-100% - 24px));
+    transition: transform 0.2s ease;
   }
   .skip-link:focus {
-    top: 16px;
+    transform: translateY(0);
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -144,6 +145,12 @@
       animation-iteration-count: 1 !important;
       transition-duration: 0.001ms !important;
       scroll-behavior: auto !important;
+    }
+    /* Brand-essential exceptions — these continue to animate
+       so the page never goes "dead" even under reduce-motion. */
+    .marquee-track {
+      animation-duration: 32s !important;
+      animation-iteration-count: infinite !important;
     }
   }
 }
@@ -232,6 +239,45 @@
   .btn-ink:hover {
     transform: translateY(-1px);
     background: #2a1a44;
+  }
+
+  /* Secondary button — outline pill. Used in Nav, Footer, and Services-card
+     CTAs. Visible but not as loud as the gradient primary, so the hierarchy
+     reads at a glance: primary = "the thing to press", secondary = "I have
+     more options here". */
+  .btn-secondary {
+    background: transparent;
+    color: var(--ink);
+    border: 1.5px solid rgba(27, 14, 46, 0.30);
+  }
+  .btn-secondary:hover {
+    transform: translateY(-1px);
+    border-color: rgba(27, 14, 46, 0.55);
+    background: rgba(27, 14, 46, 0.04);
+  }
+  /* Inverted variant for the dark Hero / on-video surfaces */
+  .btn-secondary-on-dark {
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
+    border: 1.5px solid rgba(255, 255, 255, 0.45);
+    backdrop-filter: blur(14px) saturate(160%);
+    -webkit-backdrop-filter: blur(14px) saturate(160%);
+  }
+  .btn-secondary-on-dark:hover {
+    transform: translateY(-1px);
+    background: rgba(255, 255, 255, 0.18);
+    border-color: rgba(255, 255, 255, 0.70);
+  }
+
+  /* Tertiary — text + arrow only. Used for in-section asides ("Talk to us
+     about your numbers" inside CaseStudies / Testimonials) where a pill
+     would compete with the section's own visual weight. */
+  .btn-link {
+    @apply inline-flex items-center gap-1.5 text-[12px] font-bold uppercase tracking-[0.14em] transition;
+    color: var(--ink);
+  }
+  .btn-link:hover {
+    color: #ec178d; /* dm-hot-magenta */
   }
 
   /* ───────────────── Liquid Glass system ───────────────── */
@@ -368,7 +414,8 @@
     gap: 3rem;
     width: max-content;
     white-space: nowrap;
-    animation: marquee 32s linear infinite;
+    /* Reverse direction so content flows visually LEFT → RIGHT in an endless loop */
+    animation: marquee 32s linear infinite reverse;
     will-change: transform;
   }
   .marquee-track:hover {
@@ -634,6 +681,45 @@
   .link-underline:hover,
   .link-underline:focus-visible {
     background-size: 100% 1px;
+  }
+
+  /* Electric current pulse — used on the brand-gradient process line so it
+     reads as a "live" charged conductor rather than a static graphic. */
+  @keyframes electric-pulse {
+    0%,
+    100% {
+      filter: drop-shadow(0 0 3px rgba(236, 23, 141, 0.45))
+        drop-shadow(0 0 6px rgba(255, 178, 61, 0.30));
+    }
+    50% {
+      filter: drop-shadow(0 0 8px rgba(236, 23, 141, 0.85))
+        drop-shadow(0 0 14px rgba(211, 50, 255, 0.55));
+    }
+  }
+  .electric-line {
+    animation: electric-pulse 1.8s ease-in-out infinite;
+  }
+
+  /* Spark — small traveling node that rides the process line.
+     Position is set inline (top/left) by the React component. */
+  @keyframes spark-flicker {
+    0%,
+    100% {
+      box-shadow:
+        0 0 18px 6px rgba(236, 23, 141, 0.55),
+        0 0 10px 3px rgba(255, 178, 61, 0.65),
+        0 0 4px 1px rgba(255, 255, 255, 0.9);
+    }
+    50% {
+      box-shadow:
+        0 0 26px 9px rgba(236, 23, 141, 0.80),
+        0 0 16px 5px rgba(255, 178, 61, 0.75),
+        0 0 6px 2px rgba(255, 255, 255, 1);
+    }
+  }
+  .spark {
+    background: radial-gradient(circle, #ffffff 0%, #ffb23d 35%, #ec178d 100%);
+    animation: spark-flicker 1.2s ease-in-out infinite;
   }
 
   /* Plum colour pulse — cycles between light-ink and dark-ink within

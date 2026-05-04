@@ -2,7 +2,7 @@
 
 export const business = {
   name: "Digital Movement UK",
-  tagline: "Page 1 Google in as little as 5 days.",
+  tagline: "Page 1 Google in as little as 60 days.",
   phone: "0203 815 7992",
   phoneHref: "tel:+442038157992",
   email: "office@digitalmovement.uk",
@@ -22,17 +22,15 @@ export const business = {
 
 export const navLinks = [
   { label: "Services", href: "#services" },
-  { label: "Results", href: "#results" },
+  { label: "Case studies", href: "#case-studies" },
   { label: "Process", href: "#process" },
-  { label: "Reviews", href: "#reviews" },
+  { label: "Testimonials", href: "#reviews" },
   { label: "FAQ", href: "#faq" },
 ];
 
 export const heroStats = [
-  { value: 1312, suffix: "%", label: "Increase in monthly leads" },
-  { value: 1125, suffix: "%", label: "Increase in conversions" },
-  { value: 5, suffix: "", label: "Days to page 1" },
-  { value: 200, suffix: "+", label: "5★ Google reviews" },
+  { value: 8, suffix: "x", label: "Increase in monthly leads" },
+  { value: 60, suffix: "", label: "Days to Google page 1" },
 ];
 
 export const googleRating = {
@@ -46,7 +44,7 @@ export const services = [
   {
     key: "seo",
     title: "SEO",
-    promise: "Page 1 Google. From day 5 in some cases.",
+    promise: "Page 1 Google in as little as 60 days.",
     detail:
       "Technical fixes, content that earns clicks, and link building that compounds. We show you the maths each month — what moved, why, and what's next.",
     bullets: ["Technical SEO audit", "Content + on-page", "Authority building", "Monthly maths"],
@@ -126,21 +124,127 @@ export const processSteps = [
   },
   {
     n: "02",
-    eta: "Within 48h",
-    title: "Free strategy call",
-    body: "A real 30-minute call — not a padded sales deck. We screen-share the audit and map your 30/60/90-day plan in real time.",
-  },
-  {
-    n: "03",
     eta: "Week 1",
     title: "We launch",
     body: "Tracking goes live, landing pages go up, paid campaigns turn on, and on-page SEO fixes ship. You see it all happen.",
   },
   {
-    n: "04",
-    eta: "From day 5",
-    title: "Results in weeks",
-    body: "Stronger rankings, real leads, sharper landing pages, and reporting you can actually read. You'll see momentum fast.",
+    n: "03",
+    eta: "Weeks 4–8",
+    title: "You see the maths",
+    body: "Stronger rankings, real leads, and a monthly report you can actually read. We show you what moved, why, and what's next — every month.",
+  },
+];
+
+/**
+ * Case studies — premium, snapshot-style cards. Image paths are placeholders;
+ * swap in real /public/case-studies/*.jpg files (or remote URLs) once the
+ * photography is final.
+ */
+export type CaseStudy = {
+  slug: string;
+  client: string;
+  industry: string;
+  location: string;
+  services: string[];
+  timeline: string;
+  headline: string;
+  body: string;
+  metrics: { value: string; label: string }[];
+  image: string;
+  accent: "orange" | "pink" | "violet";
+};
+
+export const caseStudies: CaseStudy[] = [
+  {
+    slug: "mayfair-aesthetics",
+    client: "Mayfair Aesthetics",
+    industry: "Cosmetic clinic",
+    location: "London",
+    services: ["SEO", "Web Design", "Google Ads"],
+    timeline: "4 months",
+    headline: "1,312% increase in monthly leads",
+    body:
+      "A boutique aesthetic clinic with strong reviews but a near-invisible Google footprint. We rebuilt the site, restructured the service architecture and tightened paid search around high-intent treatment terms.",
+    metrics: [
+      { value: "1,312%", label: "More leads" },
+      { value: "60", label: "Days to page 1" },
+      { value: "8x", label: "ROAS" },
+    ],
+    image: "https://picsum.photos/seed/dm-mayfair/1200/800",
+    accent: "pink",
+  },
+  {
+    slug: "verde-beauty-co",
+    client: "Verde Beauty Co.",
+    industry: "E-commerce",
+    location: "Brighton",
+    services: ["SEO", "Web Design"],
+    timeline: "6 months",
+    headline: "1,125% increase in conversions",
+    body:
+      "Same traffic, more than ten times the orders. We rewrote every product page, fixed Core Web Vitals, and rebuilt the checkout flow around a single primary action.",
+    metrics: [
+      { value: "1,125%", label: "Conversions" },
+      { value: "+47%", label: "AOV" },
+      { value: "1.8s", label: "LCP" },
+    ],
+    image: "https://picsum.photos/seed/dm-verde/1200/800",
+    accent: "violet",
+  },
+  {
+    slug: "ridgeline-roofing",
+    client: "Ridgeline Roofing",
+    industry: "Trades",
+    location: "Manchester",
+    services: ["Local SEO", "Google Ads"],
+    timeline: "3 months",
+    headline: "8x more booked jobs per week",
+    body:
+      "We took a five-page brochure site and turned it into a lead engine. Quote-form changes, GMB optimisation, and a tight Performance Max campaign filled the diary inside a quarter.",
+    metrics: [
+      { value: "8x", label: "Booked jobs" },
+      { value: "£42", label: "Cost per lead" },
+      { value: "92%", label: "Quote-to-job" },
+    ],
+    image: "https://picsum.photos/seed/dm-ridgeline/1200/800",
+    accent: "orange",
+  },
+  {
+    slug: "crown-lex-solicitors",
+    client: "Crown Lex Solicitors",
+    industry: "Professional services",
+    location: "Birmingham",
+    services: ["SEO", "Content", "Web Design"],
+    timeline: "5 months",
+    headline: "5x consultations from organic search",
+    body:
+      "A traditional firm punching below its weight on Google. We built topical authority across family law and employment, and shipped a redesign that finally matched the brand.",
+    metrics: [
+      { value: "5x", label: "Consultations" },
+      { value: "+612%", label: "Organic traffic" },
+      { value: "#1", label: "12 target keywords" },
+    ],
+    image: "https://picsum.photos/seed/dm-crownlex/1200/800",
+    accent: "pink",
+  },
+  {
+    slug: "fieldnote-hq",
+    client: "Fieldnote HQ",
+    industry: "B2B SaaS",
+    location: "Bristol",
+    services: ["SEO", "Content", "Conversion"],
+    timeline: "8 months",
+    headline: "1,796% increase in organic traffic",
+    body:
+      "Built the content engine alongside the founders. From a standing start, the site now ranks for 800+ commercial queries and books demos every working day without paid spend.",
+    metrics: [
+      { value: "1,796%", label: "Organic traffic" },
+      { value: "800+", label: "Ranking keywords" },
+      { value: "12", label: "Demos / week" },
+    ],
+    image: "https://picsum.photos/seed/dm-fieldnote/1200/800",
+    accent: "violet",
   },
 ];
 
@@ -212,5 +316,5 @@ export const faqs = [
 ];
 
 export const heroEyebrow = {
-  ratingText: "5.0 · 200+ Google Reviews",
+  ratingText: "5.0 · +100 reviews",
 };

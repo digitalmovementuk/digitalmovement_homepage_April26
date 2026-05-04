@@ -67,7 +67,7 @@ export function KineticH2({ spans, className = "", delay = 0 }: Props) {
                 style={{
                   transform: inView ? "translateY(0)" : "translateY(110%)",
                   transition: "transform 0.75s cubic-bezier(0.22, 1, 0.36, 1)",
-                  transitionDelay: `${delay + idx * 60}ms`,
+                  transitionDelay: `${delay + idx * 35}ms`,
                   willChange: "transform",
                 }}
               >

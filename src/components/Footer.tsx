@@ -71,7 +71,7 @@ export function Footer() {
         <div className="mt-12 sm:mt-16 grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1.2fr] text-center sm:text-left">
           <Reveal>
             <img
-              src="/brand/logo-color-positive.svg"
+              src={`${import.meta.env.BASE_URL}brand/logo-color-positive.svg`}
               alt="Digital Movement UK"
               className="h-8 w-auto mx-auto sm:mx-0"
             />
@@ -121,11 +121,6 @@ export function Footer() {
                   </a>
                 </li>
               ))}
-              <li>
-                <a href="#contact" className="text-[14px] text-ink-soft hover:text-ink">
-                  Contact
-                </a>
-              </li>
             </ul>
           </Reveal>
 

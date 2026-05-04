@@ -63,7 +63,7 @@ export function HeroReviewSlider() {
 
   return (
     <div
-      className="glass-pill rounded-pill p-2 pr-2 sm:p-2.5 flex w-full lg:inline-flex lg:w-auto items-stretch gap-2 sm:gap-3 max-w-full overflow-hidden shadow-[0_18px_50px_-22px_rgba(27,14,46,0.30)] ring-1 ring-white/40"
+      className="glass-pill rounded-pill p-2 pr-2 sm:p-2.5 flex w-full lg:inline-flex lg:w-auto items-stretch gap-2 sm:gap-3 max-w-full overflow-hidden shadow-[0_18px_50px_-22px_rgba(27,14,46,0.30)] ring-1 ring-white/60 !bg-white/95"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
       role="region"
@@ -71,9 +71,9 @@ export function HeroReviewSlider() {
       aria-live="polite"
     >
       {/* Static rating chip — bigger, more prominent */}
-      <div className="flex items-center gap-2 sm:gap-2.5 rounded-pill bg-canvas-2/80 backdrop-blur-sm px-3.5 sm:px-4 py-2 sm:py-2.5 flex-shrink-0">
+      <div className="flex items-center gap-2 sm:gap-2.5 rounded-pill bg-white px-3.5 sm:px-4 py-2 sm:py-2.5 flex-shrink-0">
         <GoogleG size={20} />
-        <span className="stat-num text-[18px] sm:text-[20px] text-ink">
+        <span className="stat-num text-[18px] sm:text-[20px] text-black">
           {googleRating.rating.toFixed(1)}
         </span>
         <span className="hidden sm:inline-flex items-center gap-0.5 text-dm-gold">
@@ -81,27 +81,27 @@ export function HeroReviewSlider() {
             <Star key={n} size={14} fill="currentColor" stroke="none" />
           ))}
         </span>
-        <span className="text-[12px] sm:text-[13px] font-bold uppercase tracking-[0.12em] text-ink-muted hidden md:inline">
-          {googleRating.count}+
+        <span className="text-[12px] sm:text-[13px] font-bold uppercase tracking-[0.12em] text-black hidden md:inline">
+          +100
         </span>
       </div>
 
       {/* Typewriter review — bigger, primary attention */}
       <div className="relative min-w-0 flex-1 overflow-hidden self-center px-1">
-        <p className="truncate text-[14px] sm:text-[16px] md:text-[17px] text-ink-soft font-medium">
-          <span className={visible.startsWith('"') ? "text-ink-faint" : ""}>
+        <p className="truncate text-[14px] sm:text-[16px] md:text-[17px] text-black font-medium">
+          <span className={visible.startsWith('"') ? "text-black/55" : ""}>
             {visible}
           </span>
           <span
             aria-hidden
-            className="inline-block w-[2px] h-[1em] align-middle ml-[1px] bg-ink"
+            className="inline-block w-[2px] h-[1em] align-middle ml-[1px] bg-black"
             style={{
               animation: isComplete ? "blink 0.9s steps(2) infinite" : undefined,
               opacity: isComplete ? undefined : 1,
             }}
           />
           {isComplete && (
-            <span className="ml-2 text-ink-muted hidden lg:inline font-semibold">
+            <span className="ml-2 text-black/70 hidden lg:inline font-semibold">
               — {review.name}
             </span>
           )}

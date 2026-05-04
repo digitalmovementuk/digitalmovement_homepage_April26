@@ -21,15 +21,14 @@ export function ScrollProgress() {
   return (
     <div
       aria-hidden
-      className="fixed inset-x-0 top-0 z-[60] h-[3px] pointer-events-none"
+      className="fixed inset-x-0 top-0 z-[80] h-[3px] pointer-events-none"
     >
       <div
         className="h-full origin-left"
         style={{
           transform: `scaleX(${progress})`,
           background: "var(--grad-cta)",
-          boxShadow: "0 0 12px rgba(241,60,100,0.5)",
-          transition: "transform 0.05s linear",
+          willChange: "transform",
         }}
       />
     </div>

@@ -1,7 +1,24 @@
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Menu, X, ArrowRight } from "lucide-react";
-import { navLinks } from "../content";
+import { navLinks, business } from "../content";
+
+function IGIcon({ size = 16 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <rect x="3" y="3" width="18" height="18" rx="5" />
+      <circle cx="12" cy="12" r="4" />
+      <circle cx="17.5" cy="6.5" r="0.6" fill="currentColor" />
+    </svg>
+  );
+}
+function FBIcon({ size = 16 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+      <path d="M13.5 22v-7.5h2.6l.4-3h-3V9.6c0-.87.27-1.46 1.52-1.46H17V5.4c-.3-.04-1.27-.13-2.4-.13-2.37 0-4 1.45-4 4.1V11.5H8v3h2.6V22h2.9z" />
+    </svg>
+  );
+}
 
 export function Nav() {
   const [scrolled, setScrolled] = useState(false);
@@ -35,7 +52,7 @@ export function Nav() {
             aria-label="Digital Movement home"
           >
             <img
-              src="/brand/logo-color-positive.svg"
+              src={`${import.meta.env.BASE_URL}brand/logo-color-positive.svg`}
               alt="Digital Movement UK"
               className="h-10 sm:h-12 lg:h-14 w-auto"
               draggable={false}
@@ -47,29 +64,60 @@ export function Nav() {
               <a
                 key={l.href}
                 href={l.href}
-                className="text-[14px] lg:text-[15px] font-extrabold uppercase tracking-[0.14em] text-ink hover:text-dm-hot-magenta transition"
+                className={`text-[14px] lg:text-[15px] font-extrabold uppercase tracking-[0.14em] hover:text-dm-hot-magenta transition ${
+                  scrolled ? "text-ink" : "text-white drop-shadow-[0_1px_8px_rgba(0,0,0,0.45)]"
+                }`}
               >
                 {l.label}
               </a>
             ))}
           </nav>
 
-          <div className="hidden md:flex items-center gap-3">
+          {/* Right cluster — social icons (always visible) + CTA / hamburger */}
+          <div className="flex items-center gap-3 sm:gap-4">
+            {/* Free-standing social icons, no box */}
+            <div className="flex items-center gap-3 sm:gap-4">
+              {business.socials.map((s) => (
+                <a
+                  key={s.label}
+                  href={s.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={s.label}
+                  className={`hover:text-dm-hot-magenta hover:-translate-y-0.5 transition ${
+                    scrolled ? "text-ink" : "text-white drop-shadow-[0_1px_8px_rgba(0,0,0,0.45)]"
+                  }`}
+                >
+                  {s.label === "Instagram" ? <IGIcon size={22} /> : <FBIcon size={22} />}
+                </a>
+              ))}
+            </div>
+
+            {/* Secondary CTA — Nav is a wayfinding surface, not a primary
+                conversion surface. Outline pill keeps the gradient pill
+                reserved for the Hero / StickyCTA / form submit. */}
             <a
               href="#contact"
-              className="btn-pill btn-primary text-[12px] px-5 py-3"
+              className={`hidden md:inline-flex btn-pill text-[12px] px-5 py-3 ${
+                scrolled ? "btn-secondary" : "btn-secondary-on-dark"
+              }`}
             >
               Free Proposal <ArrowRight size={16} />
             </a>
-          </div>
 
-          <button
-            className="md:hidden grid h-11 w-11 place-items-center rounded-pill border border-ink/10 bg-white/70 backdrop-blur text-ink"
-            onClick={() => setOpen(true)}
-            aria-label="Open menu"
-          >
-            <Menu size={20} />
-          </button>
+            {/* Hamburger — mobile only. Inverts on the dark video hero. */}
+            <button
+              className={`md:hidden grid h-11 w-11 place-items-center rounded-pill backdrop-blur ${
+                scrolled
+                  ? "border border-ink/10 bg-white/70 text-ink"
+                  : "border border-white/40 bg-white/15 text-white"
+              }`}
+              onClick={() => setOpen(true)}
+              aria-label="Open menu"
+            >
+              <Menu size={20} />
+            </button>
+          </div>
         </div>
       </header>
 
@@ -95,7 +143,7 @@ export function Nav() {
             >
               <div className="flex items-center justify-between">
                 <img
-                  src="/brand/logo-color-positive.svg"
+                  src={`${import.meta.env.BASE_URL}brand/logo-color-positive.svg`}
                   alt="Digital Movement UK"
                   className="h-7 w-auto"
                 />
@@ -125,7 +173,7 @@ export function Nav() {
               <a
                 href="#contact"
                 onClick={() => setOpen(false)}
-                className="btn-pill btn-primary mt-8 w-full justify-center"
+                className="btn-pill btn-secondary mt-8 w-full justify-center"
               >
                 Free Proposal <ArrowRight size={16} />
               </a>
